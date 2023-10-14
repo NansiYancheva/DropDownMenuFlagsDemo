@@ -1,0 +1,140 @@
+﻿@using DropDownMenuFlagsDemo.Data;
+@using DropDownMenuFlagsDemo.Services;
+@using Telerik.Blazor.Components;
+
+@page "/dropdownlist/virtualization"
+
+
+<h1>Countries and Flags</h1>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+
+
+
+<div class="k-form k-form-md demo-section k-form-vertical">
+    <div class="k-form-field">
+        <label for="country-select" class="custom-label">Select a country</label>
+        <div class="k-form-field-wrap">
+            <TelerikDropDownList @bind-Value="@Value"
+                                 Id="country-select"
+                                 ScrollMode="@DropDownScrollMode.Virtual"
+                                 Data="@CountriesList"
+                                 ValueField="@(nameof(CountryDto.Id))"
+                                 TextField="Flag"
+                                 Width="100%"
+                                 PageSize="10"
+                                 ItemHeight="35">
+                <DropDownListSettings>
+                    <DropDownListPopupSettings Height="300px"></DropDownListPopupSettings>
+                </DropDownListSettings>
+                <ValueTemplate>
+                    @{
+                        var selectedCountry = CountriesList.FirstOrDefault(c => c.Id == Value);
+                        if (selectedCountry != null)
+                        {
+                            <span class="flag-icon flag-icon-@selectedCountry.CountryCode.ToLower()"></span>
+
+                        }
+                    }
+                </ValueTemplate>
+                <ItemTemplate>
+                    <span class="flag-icon flag-icon-@context.CountryCode.ToLower()"></span>
+                    <span> @context.Country </span>
+                </ItemTemplate>
+            </TelerikDropDownList>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public List<CountryDto> CountriesList { get; set; }
+    public int Value { get; set; }
+
+    protected override void OnInitialized()
+    {
+        CountriesList =  CountryService.GetCountries().ToList();
+    }
+}
+
+<style>
+    .box {
+        margin: 4.5em 7.5em;
+        padding: 3em;
+        background-color: rgba(20,53,80,0.038);
+        border: 1px solid rgba(20,53,80,0.05);
+    }
+
+    .demo-section {
+        margin: 0 auto;
+        padding: 3em;
+        border: 1px solid rgba(20,53,80,0.14);
+        box-shadow: 0 1px 2px 1px rgba(0,0,0,.08), 0 3px 6px rgba(0,0,0,.08);
+    }
+
+    .auto {
+        max-width: max-content;
+    }
+
+    .demo-section:not(.wide):not(.auto),
+    .box:not(.wide):not(.auto) {
+        max-width: 500px;
+    }
+
+    .box:after,
+    .demo-section:after {
+        content: ";
+        display: block;
+        clear: both;
+        height: 0;
+    }
+
+    .box {
+        margin: 4.5em auto;
+    }
+
+    .box:first-child {
+        margin-top: 0;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .demo-section.editor {
+        max-width: 100%;
+        border: none;
+    }
+    .demo-alert {
+        font: normal 18px "Metric";
+        border-radius: 2px;
+        margin: 20px auto 40px auto;
+        padding: 20px;
+        border-left: 4px solid;
+    }
+
+    .demo-alert-success {
+        border-left-color: rgb(55,180,0);
+        background: rgba(55,180,0, 0.1);
+    }
+
+    .demo-alert-info {
+        border-left-color: rgb(83,146,228);
+        background: rgba(83,146,228, 0.1);
+    }
+
+    .demo-alert-error {
+        border-left-color: rgb(243, 23, 0);
+        background: rgba(243, 23, 0, 0.1);
+    }
+
+    .demo-alert-warning {
+        border-left-color: rgb(255, 192, 0);
+        background: rgba(255, 192, 0, 0.1);
+    }
+
+    .custom-label {
+        font-size: 18px;
+        color: #333;
+    }
+</style>
